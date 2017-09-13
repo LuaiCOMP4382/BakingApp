@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/exo_pv_step"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <View
+            android:id="@+id/frag_step_deta_divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/colorDivider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="3dp"
+                    android:src="@android:drawable/star_big_off" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="Instructions"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="36sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_step_details_instructions"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:text="A big text should be found here"
+                android:textColor="@color/colorPrimaryTextDark"
+                android:textSize="@dimen/card_detail_size" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="@dimen/step_item_image_size">
+
+            <TextView
+                android:id="@+id/item_tv_recipe_details_step_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Step 1"
+                android:textColor="@color/colorPrimaryTextDark"
+                android:textSize="@dimen/card_title_size"/>
+
+            <TextView
+                android:id="@+id/item_tv_recipe_details_short_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Add the milk to the bones"
+                android:textColor="@color/colorSecondaryTextDark"
+                android:textSize="@dimen/card_detail_size" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/step_item_image_size"
+            android:layout_height="@dimen/step_item_image_size"
+            android:src="@android:drawable/ic_menu_help"
+            android:layout_marginTop="12dp"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
+
+</LinearLayout>

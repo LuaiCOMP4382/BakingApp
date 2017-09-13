@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="10dp"
-            android:text="Recipe Name"
+            android:text="-"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/card_title_size" />
@@ -58,7 +58,7 @@
                 android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="- BLA BLA BLA"
+                android:text="Loading..."
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="15sp"
                 android:visibility="gone" />

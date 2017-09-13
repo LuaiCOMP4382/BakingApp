@@ -29,29 +29,70 @@ import com.student.luai.bakingapp.utilities.NetworkUtilis;
 
 public class StepDetailFragment extends Fragment {
 
-    private long mRecipeId;
-    private int mStepId;
+    private long mRecipeId = 1;
+    private int mStepId = 0;
 
     private SimpleExoPlayer mExoPlayer;
 
     private SimpleExoPlayerView mPlayerView;
+    private TextView mTextViewInstructionsTitle;
     private TextView mTextViewInstructions;
+
+    private String mUriMediaSourceString; // Used in saving instances
+    private long mCurrentPosition = 0;
+
+    private boolean m600width;
 
     public StepDetailFragment() {
 
+    }
+
+    public long getRecipeId() {
+        return mRecipeId;
+    }
+
+    public int getStepId() {
+        return mStepId;
+    }
+
+    public long getCurrentPosition() {
+        return mExoPlayer.getCurrentPosition();
+    }
+
+    public void setCurrentPosition(long cp) {
+        mCurrentPosition = cp;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        m600width = getResources().getBoolean(R.bool.is_tablet);
+
         View rootView = inflater.inflate(R.layout.fragment_step_detail, container, false);
 
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_pv_step);
+        mTextViewInstructionsTitle = (TextView) rootView.findViewById(R.id.tv_step_details_instructions_title);
         mTextViewInstructions = (TextView) rootView.findViewById(R.id.tv_step_details_instructions);
         //loadInstructionsData();
 
+        if (!m600width) {
+            if (savedInstanceState != null)
+                mCurrentPosition = savedInstanceState.getLong("position");
+            else
+                mCurrentPosition = 0;
+        }
+
         return rootView;
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong("position", mExoPlayer.getCurrentPosition());
+        outState.putString("player_uri", mUriMediaSourceString);
 
     }
 
@@ -59,8 +100,8 @@ public class StepDetailFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        if (mExoPlayer != null)
-            mExoPlayer.stop();
+        //if (mExoPlayer != null)
+        //    mExoPlayer.stop();
     }
 
     @Override
@@ -77,10 +118,10 @@ public class StepDetailFragment extends Fragment {
 
     }
 
-    private void initializePlayer(Uri mediaUri) {
+    private void initializePlayer(Uri mediaUri, long currentPosition) {
 
-        if (mExoPlayer == null) {
-
+        //if (mExoPlayer == null) {
+        try {
             Context context = getContext();
 
             TrackSelector trackSelector = new DefaultTrackSelector();
@@ -96,8 +137,14 @@ public class StepDetailFragment extends Fragment {
 
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(false);
+            mExoPlayer.seekTo(mCurrentPosition);
 
+            mUriMediaSourceString = mediaUri.toString();
+        } catch (Exception ex) {
+            // Frankly I think this is a great solution to exceptions rising
+            mPlayerView.setVisibility(View.GONE);
         }
+        //}
 
     }
 
@@ -136,8 +183,13 @@ public class StepDetailFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            if (s != null && !s.equals(""))
+            if (s != null && !s.equals("")) {
+                mTextViewInstructionsTitle.setText("Step " + mStepId);
                 mTextViewInstructions.setText(s);
+            } else {
+                mTextViewInstructionsTitle.setText("Error");
+                mTextViewInstructions.setText("Error loading data");
+            }
 
         }
     }
@@ -159,9 +211,10 @@ public class StepDetailFragment extends Fragment {
             super.onPostExecute(uri);
 
 
-            if (uri != null && !uri.toString().equals(""))
-                initializePlayer(uri);
-            else
+            if (uri != null && !uri.toString().equals("")) {
+                initializePlayer(uri, mCurrentPosition);
+                mPlayerView.setVisibility(View.VISIBLE);
+            } else
                 mPlayerView.setVisibility(View.GONE);
         }
     }

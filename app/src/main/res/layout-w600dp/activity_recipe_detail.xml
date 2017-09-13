@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_recipe_detail"
+        android:name="com.student.luai.bakingapp.RecipeDetailFragment">
+
+    </fragment>
+
+    <View
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorDivider"
+        />
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_step_detail"
+        android:name="com.student.luai.bakingapp.StepDetailFragment">
+
+    </fragment>
+
+</LinearLayout>

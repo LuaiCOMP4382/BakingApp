@@ -1,5 +1,6 @@
 package com.student.luai.bakingapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,13 +34,49 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
     private ImageView mImageViewIngsArrow;
     private LinearLayout mLinearLayoutIngsControl;
 
+    private boolean m600width;
+
+
+    private OnStepClickActivityListener mSCAListener;
+    // This is used in the activity that holds this fragment. Used in tablet mode for communicating with the detail fragment.
+    public interface OnStepClickActivityListener {
+        void onStepClickActivity(int stepId);
+    }
+
     public RecipeDetailFragment() {
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mSCAListener = (OnStepClickActivityListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnImageClickListener");
+        }
+    }
+
+    // Helper methods
+    public void makeIngsVisible() {
+
+        mTextViewRecipeIngs.setVisibility(View.VISIBLE);
+
+    }
+
+    public void makeIngsGone() {
+
+        mTextViewRecipeIngs.setVisibility(View.GONE);
 
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        m600width = getResources().getBoolean(R.bool.is_tablet);
 
         View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 
@@ -58,10 +95,32 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+        if (!m600width) {
+            if (savedInstanceState != null) {
+                if (savedInstanceState.getBoolean("hidden"))
+                    // Make it visible and call showHideIngs, this way it will be hidden automatically
+                    mTextViewRecipeIngs.setVisibility(View.VISIBLE);
+                else
+                    // Make it gone and call showHideIngs, this way it will be shown automatically
+                    mTextViewRecipeIngs.setVisibility(View.GONE);
+            } else
+                // By default
+                mTextViewRecipeIngs.setVisibility(View.VISIBLE);
+        }
+
+        //showHideIngs(null);
+
         loadStepAndIngsData();
 
         return rootView;
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean("hidden", mTextViewRecipeIngs.getVisibility() == View.GONE);
     }
 
     public void loadStepAndIngsData() {
@@ -87,15 +146,25 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         return mRecipeName;
     }
 
+    public boolean isHiddenIngs() {
+        return mTextViewRecipeIngs.getVisibility() == View.GONE;
+    }
+
     @Override
     public void onStepClick(int id) {
 
-        Intent i = new Intent(getContext(), StepDetailActivity.class);
+        // Don't launch a new activity if we are in tablet mode
 
-        i.putExtra("recipeId", mRecipeId);
-        i.putExtra("stepId", id);
+        if (!m600width) {
 
-        startActivity(i);
+            Intent i = new Intent(getContext(), StepDetailActivity.class);
+
+            i.putExtra("recipeId", mRecipeId);
+            i.putExtra("stepId", id);
+
+            startActivity(i);
+        } else
+            mSCAListener.onStepClickActivity(id);
 
     }
 
@@ -145,7 +214,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
             try {
 
-                if (steps != null || steps.length() != 0) {
+                if (steps != null && steps.length() != 0) {
 
                     int stepsLength = steps.length();
 
@@ -162,7 +231,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
                 }
 
-                if (ings != null || ings.length() != 0) {
+                if (ings != null && ings.length() != 0) {
 
                     if (returnResult == null)
                         returnResult = new String[1]; // In case steps array was empty, initialize a single element array
@@ -219,6 +288,10 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
                     descData[i] = strings[i];
 
                 mAdapter.setStepData(descData);
+
+            } else {
+
+                mTextViewRecipeIngs.setText("Error loading data");
 
             }
 

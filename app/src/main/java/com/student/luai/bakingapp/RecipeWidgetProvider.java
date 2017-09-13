@@ -22,11 +22,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         //CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_provider);
-        /*views.setTextViewText(R.id.tv_recipe1, "1. Nutella Pie");
-        views.setTextViewText(R.id.tv_recipe2, "2. Brownies");
-        views.setTextViewText(R.id.tv_recipe3, "3. Yellow Cake");
-        views.setTextViewText(R.id.tv_recipe4, "4. Cheesecake");*/
 
+        // Thought it would be better if the widget directly opens the activity, because the user accesses steps there on top of ingredients
 
         Intent intent1 = new Intent(context, RecipeDetailActivity.class);
         Intent intent2 = new Intent(context, RecipeDetailActivity.class);
@@ -45,10 +42,10 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         intent4.putExtra("id", (long) 4);
         intent4.putExtra("name", "Cheesecake");
 
-        PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 2, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pendingIntent3 = PendingIntent.getActivity(context, 3, intent3, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pendingIntent4 = PendingIntent.getActivity(context, 4, intent4, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(context, 1, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent2 = PendingIntent.getActivity(context, 2, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent3 = PendingIntent.getActivity(context, 3, intent3, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent4 = PendingIntent.getActivity(context, 4, intent4, PendingIntent.FLAG_UPDATE_CURRENT);
 
         views.setOnClickPendingIntent(R.id.tv_recipe1, pendingIntent1);
         views.setOnClickPendingIntent(R.id.tv_recipe2, pendingIntent2);

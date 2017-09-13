@@ -12,7 +12,7 @@
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/exo_pv_step"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="400dp" />
 
         <View
             android:id="@+id/frag_step_deta_divider"
@@ -39,10 +39,11 @@
                     android:src="@android:drawable/star_big_off" />
 
                 <TextView
+                    android:id="@+id/tv_step_details_instructions_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:text="Instructions"
+                    android:text="Loading..."
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="36sp" />
 
@@ -53,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:text="A big text should be found here"
+                android:text=""
                 android:textColor="@color/colorPrimaryTextDark"
                 android:textSize="@dimen/card_detail_size" />
 

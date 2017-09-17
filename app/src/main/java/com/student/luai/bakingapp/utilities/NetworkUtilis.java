@@ -152,4 +152,26 @@ public class NetworkUtilis {
 
     }
 
+    public static Uri getStepImageUri(long recipeId, int stepId) {
+
+        try {
+
+            JSONArray stepArray = getStepsJSONArray(recipeId);
+
+            if (stepArray == null)
+                return null;
+
+            for (int i = 0; i < stepArray.length(); i++)
+                if (stepArray.getJSONObject(i).getInt("id") == stepId)
+                    return Uri.parse(stepArray.getJSONObject(i).getString("thumbnailURL"));
+
+            return null;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 }

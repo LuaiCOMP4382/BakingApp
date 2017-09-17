@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 import com.student.luai.bakingapp.utilities.NetworkUtilis;
 
 public class StepDetailFragment extends Fragment {
@@ -35,6 +37,7 @@ public class StepDetailFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
 
     private SimpleExoPlayerView mPlayerView;
+    private ImageView mImageView;
     private TextView mTextViewInstructionsTitle;
     private TextView mTextViewInstructions;
 
@@ -56,7 +59,9 @@ public class StepDetailFragment extends Fragment {
     }
 
     public long getCurrentPosition() {
-        return mExoPlayer.getCurrentPosition();
+
+        return mCurrentPosition;
+
     }
 
     public void setCurrentPosition(long cp) {
@@ -74,7 +79,7 @@ public class StepDetailFragment extends Fragment {
         mPlayerView = (SimpleExoPlayerView) rootView.findViewById(R.id.exo_pv_step);
         mTextViewInstructionsTitle = (TextView) rootView.findViewById(R.id.tv_step_details_instructions_title);
         mTextViewInstructions = (TextView) rootView.findViewById(R.id.tv_step_details_instructions);
-        //loadInstructionsData();
+        mImageView = (ImageView) rootView.findViewById(R.id.iv_step_details_image);
 
         if (!m600width) {
             if (savedInstanceState != null)
@@ -91,15 +96,19 @@ public class StepDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putLong("position", mExoPlayer.getCurrentPosition());
+        outState.putLong("position", mCurrentPosition);
         outState.putString("player_uri", mUriMediaSourceString);
 
     }
+
+
 
     @Override
     public void onPause() {
         super.onPause();
 
+
+        releasePlayer();
         //if (mExoPlayer != null)
         //    mExoPlayer.stop();
     }
@@ -115,6 +124,7 @@ public class StepDetailFragment extends Fragment {
 
         new LoadInstructionsDataAsyncTask().execute();
         new LoadPlayerVideoUriAsyncTask().execute();
+        new LoadImageUriAsyncTask().execute();
 
     }
 
@@ -148,9 +158,10 @@ public class StepDetailFragment extends Fragment {
 
     }
 
-    private void releasePlayer() {
+    public void releasePlayer() {
 
         if (mExoPlayer != null) {
+            mCurrentPosition = mExoPlayer.getCurrentPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -216,6 +227,34 @@ public class StepDetailFragment extends Fragment {
                 mPlayerView.setVisibility(View.VISIBLE);
             } else
                 mPlayerView.setVisibility(View.GONE);
+        }
+    }
+
+    private class LoadImageUriAsyncTask extends AsyncTask<Void, Void, Uri> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Uri doInBackground(Void... voids) {
+            return NetworkUtilis.getStepImageUri(mRecipeId, mStepId);
+        }
+
+        @Override
+        protected void onPostExecute(Uri uri) {
+            super.onPostExecute(uri);
+
+            if (uri != null && !uri.toString().equals("")) {
+                try {
+                    Picasso.with(getContext()).load(uri).fit().into(mImageView);
+                    mImageView.setVisibility(View.VISIBLE);
+                } catch (Exception ex) {
+                    mImageView.setVisibility(View.GONE);
+                }
+            } else
+                mImageView.setVisibility(View.GONE);
         }
     }
 

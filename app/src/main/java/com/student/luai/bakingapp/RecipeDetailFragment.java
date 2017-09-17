@@ -29,6 +29,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
     private StepAdapter mAdapter;
     private RecyclerView mRecyclerView;
+    private int mScrollPosition;
     private TextView mTextViewRecipeName;
     private TextView mTextViewRecipeIngs;
     private ImageView mImageViewIngsArrow;
@@ -97,18 +98,25 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
         if (!m600width) {
             if (savedInstanceState != null) {
-                if (savedInstanceState.getBoolean("hidden"))
+
+                mScrollPosition = savedInstanceState.getInt("scroll_pos", 0);
+
+                if (savedInstanceState.getBoolean("hidden")) {
                     // Make it visible and call showHideIngs, this way it will be hidden automatically
                     mTextViewRecipeIngs.setVisibility(View.VISIBLE);
-                else
+
+                } else {
                     // Make it gone and call showHideIngs, this way it will be shown automatically
                     mTextViewRecipeIngs.setVisibility(View.GONE);
+
+                }
+
             } else
                 // By default
                 mTextViewRecipeIngs.setVisibility(View.VISIBLE);
         }
 
-        //showHideIngs(null);
+        showHideIngs(null);
 
         loadStepAndIngsData();
 
@@ -117,10 +125,18 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        mScrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putBoolean("hidden", mTextViewRecipeIngs.getVisibility() == View.GONE);
+        outState.putInt("scroll_pos", mScrollPosition);
+
     }
 
     public void loadStepAndIngsData() {
@@ -136,6 +152,18 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         mTextViewRecipeName.setText(recipeName);
 
         loadStepAndIngsData();
+    }
+
+    public int getRecyclerViewPosition() {
+        return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+    }
+
+    public void setRecyclerViewPositionValue(int position) {
+        mScrollPosition = position;
+    }
+
+    public void setRecyclerViewPosition(int position) {
+        ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition(position);
     }
 
     public long getRecipeId() {
@@ -288,6 +316,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
                     descData[i] = strings[i];
 
                 mAdapter.setStepData(descData);
+                setRecyclerViewPosition(mScrollPosition);
 
             } else {
 

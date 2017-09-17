@@ -10,8 +10,16 @@
         android:id="@+id/rv_recipe_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        />
 
-    </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:id="@+id/tv_main_error_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:text="No internet connection or empty results"
+        android:textSize="28sp"
+        android:visibility="gone"/>
 
 </FrameLayout>

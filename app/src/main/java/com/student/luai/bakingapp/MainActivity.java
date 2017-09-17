@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.TextView;
 
 import com.student.luai.bakingapp.adapters.RecipeAdapter;
 import com.student.luai.bakingapp.utilities.NetworkUtilis;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
+    private TextView mTextViewErrorMessage;
 
     private boolean m600width;
 
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         mAdapter = new RecipeAdapter(this, this);
 
         RecyclerView.LayoutManager layoutManager;
+
+        mTextViewErrorMessage = (TextView) findViewById(R.id.tv_main_error_text);
 
         if (!m600width)
             layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
             super.onPreExecute();
 
             mAdapter.setRecipeData(null, null, null);
+            mTextViewErrorMessage.setVisibility(View.GONE);
 
         }
 
@@ -116,9 +122,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    mTextViewErrorMessage.setVisibility(View.VISIBLE);
                 }
 
-            }
+            } else
+                mTextViewErrorMessage.setVisibility(View.VISIBLE);
 
         }
 

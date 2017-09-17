@@ -35,17 +35,22 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
 
         if (savedInstanceState != null) {
 
+
             mRecipeId = savedInstanceState.getLong("recipeId");
             mRecipeName = savedInstanceState.getString("name");
             mStepId = savedInstanceState.getInt("stepId");
-            if (savedInstanceState.getBoolean("hidden"))
-                fragment.makeIngsGone();
-            else
-                fragment.makeIngsVisible();
 
-            if (m600width)
+            if (m600width) {
+
+                if (savedInstanceState.getBoolean("hidden"))
+                    fragment.makeIngsVisible();
+                else
+                    fragment.makeIngsGone();
+
+                fragment.showHideIngs(null);
+                fragment.setRecyclerViewPositionValue(savedInstanceState.getInt("scroll_pos"));
                 fragment2.setCurrentPosition(savedInstanceState.getLong("position"));
-
+            }
         } else {
 
             Intent i = getIntent();
@@ -71,6 +76,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        if (m600width)
+            fragment2.releasePlayer();
+
         mRecipeName = fragment.getRecipeName();
         if (intent.getStringExtra("name") != null && !intent.getStringExtra("name").equals(""))
             mRecipeName = intent.getStringExtra("name");
@@ -91,10 +99,11 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
         outState.putString("name", mRecipeName);
         outState.putInt("stepId", mStepId);
         outState.putLong("recipeId", mRecipeId);
-        outState.putBoolean("hidden", fragment.isHiddenIngs());
-        if (m600width)
+        if (m600width) {
+            outState.putBoolean("hidden", fragment.isHiddenIngs());
             outState.putLong("position", fragment2.getCurrentPosition());
-
+            outState.putInt("scroll_pos", fragment.getRecyclerViewPosition());
+        }
     }
 
     @Override

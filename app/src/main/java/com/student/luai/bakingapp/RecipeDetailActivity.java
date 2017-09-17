@@ -48,7 +48,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
                     fragment.makeIngsGone();
 
                 fragment.showHideIngs(null);
-                fragment.setRecyclerViewPositionValue(savedInstanceState.getInt("scroll_pos"));
+                fragment.setRecyclerViewLayoutState(savedInstanceState.getParcelable("scroll_pos"));
                 fragment2.setCurrentPosition(savedInstanceState.getLong("position"));
             }
         } else {
@@ -102,7 +102,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements RecipeDet
         if (m600width) {
             outState.putBoolean("hidden", fragment.isHiddenIngs());
             outState.putLong("position", fragment2.getCurrentPosition());
-            outState.putInt("scroll_pos", fragment.getRecyclerViewPosition());
+            outState.putParcelable("scroll_pos", fragment.getRecyclerViewLayoutState());
         }
     }
 

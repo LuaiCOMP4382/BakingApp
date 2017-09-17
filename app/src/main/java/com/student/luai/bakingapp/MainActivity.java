@@ -1,6 +1,7 @@
 package com.student.luai.bakingapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.student.luai.bakingapp.adapters.RecipeAdapter;
 import com.student.luai.bakingapp.utilities.NetworkUtilis;
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
     // Note: I decided against using instance states and let the adapter reload data, because the
     // data isn't too large, and it would be more consistent if it was left like this.
+
 
     private RecyclerView mRecyclerView;
     private RecipeAdapter mAdapter;
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         protected void onPreExecute() {
             super.onPreExecute();
 
-            mAdapter.setRecipeData(null, null, null);
+            mAdapter.setRecipeData(null, null, null, null);
             mTextViewErrorMessage.setVisibility(View.GONE);
 
         }
@@ -105,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                     long[] ids = new long[jsonArrayLength];
                     String[] names = new String[jsonArrayLength];
                     int[] servings = new int[jsonArrayLength];
+                    Uri[] images = new Uri[jsonArrayLength];
 
                     JSONObject currentObject;
 
@@ -115,10 +119,11 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                         ids[i] = currentObject.getLong("id");
                         names[i] = currentObject.getString("name");
                         servings[i] = currentObject.getInt("servings");
+                        images[i] = Uri.parse(currentObject.getString("image"));
 
                     }
 
-                    mAdapter.setRecipeData(ids, names, servings);
+                    mAdapter.setRecipeData(ids, names, servings, images);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +30,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
     private StepAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private int mScrollPosition;
+    private Parcelable mListState;
     private TextView mTextViewRecipeName;
     private TextView mTextViewRecipeIngs;
     private ImageView mImageViewIngsArrow;
@@ -99,7 +100,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         if (!m600width) {
             if (savedInstanceState != null) {
 
-                mScrollPosition = savedInstanceState.getInt("scroll_pos", 0);
+                mListState = savedInstanceState.getParcelable("scroll_pos");
 
                 if (savedInstanceState.getBoolean("hidden")) {
                     // Make it visible and call showHideIngs, this way it will be hidden automatically
@@ -127,7 +128,13 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
     @Override
     public void onPause() {
         super.onPause();
-        mScrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mListState != null)
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
     }
 
     @Override
@@ -135,7 +142,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         super.onSaveInstanceState(outState);
 
         outState.putBoolean("hidden", mTextViewRecipeIngs.getVisibility() == View.GONE);
-        outState.putInt("scroll_pos", mScrollPosition);
+        outState.putParcelable("scroll_pos", mRecyclerView.getLayoutManager().onSaveInstanceState());
 
     }
 
@@ -154,16 +161,12 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
         loadStepAndIngsData();
     }
 
-    public int getRecyclerViewPosition() {
-        return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+    public Parcelable getRecyclerViewLayoutState() {
+        return mRecyclerView.getLayoutManager().onSaveInstanceState();
     }
 
-    public void setRecyclerViewPositionValue(int position) {
-        mScrollPosition = position;
-    }
-
-    public void setRecyclerViewPosition(int position) {
-        ((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPosition(position);
+    public void setRecyclerViewLayoutState(Parcelable state) {
+        mListState = state;
     }
 
     public long getRecipeId() {
@@ -257,6 +260,8 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
 
                     }
 
+
+
                 }
 
                 if (ings != null && ings.length() != 0) {
@@ -316,7 +321,7 @@ public class RecipeDetailFragment extends Fragment implements StepAdapter.StepCl
                     descData[i] = strings[i];
 
                 mAdapter.setStepData(descData);
-                setRecyclerViewPosition(mScrollPosition);
+                mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
 
             } else {
 

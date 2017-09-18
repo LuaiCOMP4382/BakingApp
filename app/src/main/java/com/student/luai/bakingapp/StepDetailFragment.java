@@ -44,6 +44,8 @@ public class StepDetailFragment extends Fragment {
     private String mUriMediaSourceString; // Used in saving instances
     private long mCurrentPosition = 0;
 
+    private Uri mediaUri; // Used Load Video AsyncTask and in onResume
+
     private boolean m600width;
 
     public StepDetailFragment() {
@@ -107,10 +109,19 @@ public class StepDetailFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-
+        mCurrentPosition = mExoPlayer.getCurrentPosition();
         releasePlayer();
         //if (mExoPlayer != null)
         //    mExoPlayer.stop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mExoPlayer == null && mediaUri != null)
+            initializePlayer(mediaUri, mCurrentPosition);
+
     }
 
     @Override
@@ -224,6 +235,7 @@ public class StepDetailFragment extends Fragment {
 
             if (uri != null && !uri.toString().equals("")) {
                 initializePlayer(uri, mCurrentPosition);
+                mediaUri = Uri.parse(uri.toString());
                 mPlayerView.setVisibility(View.VISIBLE);
             } else
                 mPlayerView.setVisibility(View.GONE);
